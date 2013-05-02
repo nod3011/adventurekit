@@ -56,14 +56,16 @@
     }
 }
 
-- (void)addItemToInventory:(NSString *)item withImage:(NSString *)itemImage {
+- (void)addItemToInventory:(NSString *)item withImage:(NSString *)itemImage andDescription:(NSString *)description {
     
     //find the number of items in the inventory and increment by 1
     numberOfItemsInInventory = [defaults integerForKey:@"numberOfItemsInInventory"];
     
     dictionaryOfItemToAddToInventory = [[NSDictionary alloc]
-                                 initWithObjectsAndKeys:item,@"itemName",
-                                 itemImage,@"itemImage",
+                                 initWithObjectsAndKeys:
+                                        item,@"itemName",
+                                        itemImage,@"itemImage",
+                                        description, @"itemDescription",
                                  nil];
     
     NSMutableArray *newContentsInArray = [[NSMutableArray alloc] initWithObjects:dictionaryOfItemToAddToInventory, nil];
@@ -129,8 +131,6 @@
                                 return [[dict objectForKey:@"itemName"] isEqual:item];
                             }];
         
-        NSLog(@"index is %i", index);
-
         [oldContents removeObjectAtIndex:index];
         
         BOOL success = [oldContents writeToFile:filePathToPlist atomically:YES];
@@ -140,9 +140,28 @@
     }
     
     [defaults setInteger:numberOfItemsInInventory forKey:@"numberOfItemsInInventory"];
-    NSLog(@"number of items after decrement %i", [defaults integerForKey:@"numberOfItemsInInventory"]);
     [[NSUserDefaults standardUserDefaults] synchronize];
 
+}
+
+- (NSString*)lookAtItem:(NSString *)item {
+    
+    NSMutableArray *oldContents = [[NSMutableArray alloc] initWithContentsOfFile:filePathToPlist];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePathToPlist]) {
+        
+        NSPredicate *p = [NSPredicate predicateWithFormat:@"itemName = %@", item];
+        NSArray *matchedDicts = [oldContents filteredArrayUsingPredicate:p];
+        NSDictionary *item = [matchedDicts objectAtIndex:0];
+        NSString *itemName = [item objectForKey:@"itemDescription"];
+        return itemName;
+    }
+    
+    return nil;
+}
+
+- (void)useItem:(NSString *)item {
+    
 }
 
 
