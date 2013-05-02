@@ -47,12 +47,14 @@
         inventory = [Inventory create];
         [self addChild:inventory z:2 tag:1];
         
-        //[inventory addItemToInventory:@"gun" withImage:@"gun.png" andDescription:@"this is a gun"];
+        [inventory addItemToInventory:@"rope" withImage:@"rope.png" andDescription:@"this is a rope"];
         
         //[inventory removeItemFromInventory:@"gun"];
         
         NSString *name = [inventory lookAtItem:@"gun"];
         NSLog(@"name of item is: %@", name);
+        
+        [inventory showInventory];
         
 	}
     

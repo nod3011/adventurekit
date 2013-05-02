@@ -99,7 +99,6 @@
     numberOfItemsInInventory ++;
     [defaults setInteger:numberOfItemsInInventory forKey:@"numberOfItemsInInventory"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    NSLog(@"incremented number %i", numberOfItemsInInventory);
 
 }
 
@@ -107,11 +106,17 @@
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePathToPlist]) {
                 
-        NSMutableDictionary *anotherDict = [NSMutableDictionary dictionaryWithContentsOfFile:filePathToPlist];
+        NSMutableArray *contentsOfInventory = [[NSMutableArray alloc] initWithContentsOfFile:filePathToPlist];
+        
+        for (int i = 0; i < [contentsOfInventory count]; i++) {
             
-        for (id key in anotherDict) {
-            NSLog(@"key: %@, value: %@", key, [anotherDict objectForKey:key]);
-        }        
+            NSDictionary *item = [contentsOfInventory objectAtIndex:i];
+            NSString *itemName = [item objectForKey:@"itemName"];
+            NSString *itemImage = [item objectForKey:@"itemImage"];
+            NSString *itemDescription = [item objectForKey:@"itemDescription"];
+            
+            NSLog(@"item number: %i, name: %@, image: %@ description: %@", i,itemName,itemImage,itemDescription);
+        }
     }
 }
 
@@ -125,7 +130,6 @@
         
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePathToPlist]) {
         
-            
         NSUInteger index = [oldContents indexOfObjectPassingTest:
                             ^BOOL(NSDictionary *dict, NSUInteger idx, BOOL *stop) {
                                 return [[dict objectForKey:@"itemName"] isEqual:item];
