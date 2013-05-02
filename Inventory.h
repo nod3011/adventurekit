@@ -19,9 +19,10 @@
 
 + (id)create;
 - (void)checkAndCreateInventory;
-- (void)addItemToInventory:(NSString*)item withImage:(NSString*)itemImage andDescription:(NSString*)description;
+- (void)addItemToInventory:(NSString*)item withImage:(NSString*)itemImage andDescription:(NSString*)description worksWith:(NSString*)something;
 - (void)showInventory;
 - (void)removeItemFromInventory:(NSString*)item;
 - (NSString*)lookAtItem:(NSString*)item;
-- (void)useItem:(NSString*)item;
+- (void)useItem:(NSString*)item with:(NSString*)something;
+
 @end

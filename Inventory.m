@@ -7,6 +7,7 @@
 //
 
 #import "Inventory.h"
+#import "Constants.h"
 
 
 @implementation Inventory
@@ -56,7 +57,7 @@
     }
 }
 
-- (void)addItemToInventory:(NSString *)item withImage:(NSString *)itemImage andDescription:(NSString *)description {
+- (void)addItemToInventory:(NSString *)item withImage:(NSString *)itemImage andDescription:(NSString *)description worksWith:(NSString *)something {
     
     //find the number of items in the inventory and increment by 1
     numberOfItemsInInventory = [defaults integerForKey:@"numberOfItemsInInventory"];
@@ -66,6 +67,7 @@
                                         item,@"itemName",
                                         itemImage,@"itemImage",
                                         description, @"itemDescription",
+                                        something, @"worksWith",
                                  nil];
     
     NSMutableArray *newContentsInArray = [[NSMutableArray alloc] initWithObjects:dictionaryOfItemToAddToInventory, nil];
@@ -164,8 +166,29 @@
     return nil;
 }
 
-- (void)useItem:(NSString *)item {
+- (void)useItem:(NSString *)item with:(NSString *)something {
     
+    NSMutableArray *oldContents = [[NSMutableArray alloc] initWithContentsOfFile:filePathToPlist];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePathToPlist]) {
+        
+        NSPredicate *p = [NSPredicate predicateWithFormat:@"itemName = %@", item];
+        NSArray *matchedDicts = [oldContents filteredArrayUsingPredicate:p];
+        NSDictionary *item = [matchedDicts objectAtIndex:0];
+        
+        NSString *itemName = [item objectForKey:@"itemName"];
+        NSString *itemWorksWith = [item objectForKey:@"worksWith"];
+        
+        if ([something isEqualToString:itemWorksWith]) {
+            NSLog(@"You used %@ with %@ and it worked", itemName, itemWorksWith);
+        }
+        else {
+            //print out random failure message
+            NSArray *failureStrings = [[NSArray alloc]initWithObjects:failureString1, failureString2, nil];
+            NSUInteger randomIndex = arc4random() % [failureStrings count];
+            NSLog(@"%@", [failureStrings objectAtIndex:randomIndex]);
+        }
+    }
 }
 
 
