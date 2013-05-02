@@ -102,6 +102,8 @@
 	if( [navController_ visibleViewController] == director_ )
 		[director_ pause];
     
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
 }
 
 // call got rejected
@@ -116,6 +118,8 @@
 	if( [navController_ visibleViewController] == director_ )
 		[director_ stopAnimation];
     
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
 }
 
 -(void) applicationWillEnterForeground:(UIApplication*)application
@@ -128,6 +132,9 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
 	CC_DIRECTOR_END();
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
 }
 
 // purge memory

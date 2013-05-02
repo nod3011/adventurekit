@@ -21,6 +21,18 @@
     if ((self = [super init])) {
                 
         [self checkAndCreateInventory];
+        
+        dictionaryOfItemToAddToInventory = [[NSMutableDictionary alloc]init];
+        defaults = [NSUserDefaults standardUserDefaults];
+        
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        filePathToPlist = [documentsDirectory stringByAppendingPathComponent:@"inventory.plist"];
+        
+        //[[NSFileManager defaultManager] removeItemAtPath:filePathToPlist error:NULL];
+        //[defaults setInteger:-1 forKey:@"numberOfItemsInInventory"];
+        //[[NSUserDefaults standardUserDefaults] synchronize];
+        
     }
     return self;
 }
@@ -38,6 +50,7 @@
     // The writable database does not exist, so copy the default to the appropriate location.
     NSString *defaultDBPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"inventory.plist"];
     success = [fileManager copyItemAtPath:defaultDBPath toPath:writableDBPath error:&error];
+    
     if (!success) {
         NSAssert1(0, @"Failed to create writable database file with message '%@'.", [error localizedDescription]);
     }
@@ -45,35 +58,54 @@
 
 - (void)addItemToInventory:(NSString *)item withImage:(NSString *)itemImage {
     
-    dictionaryOfItemToAddToInventory = [[NSDictionary alloc] initWithObjectsAndKeys:
-                         itemImage, item, nil];
-        
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"inventory.plist"];
+    //find the number of items in the inventory and increment by 1
+    numberOfItemsInInventory = [defaults integerForKey:@"numberOfItemsInInventory"];
     
-    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-        
-        inventoryContents = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
-        [inventoryContents addObject:dictionaryOfItemToAddToInventory];
-        [inventoryContents writeToFile:filePath atomically:YES];
-        
-        BOOL success = [inventoryContents writeToFile:filePath atomically:YES];
-        if (!success) {
-            NSLog(@"not wrote to plist");
+    dictionaryOfItemToAddToInventory = [[NSDictionary alloc]
+                                 initWithObjectsAndKeys:item,@"itemName",
+                                 itemImage,@"itemImage",
+                                 nil];
+    
+    NSMutableArray *newContentsInArray = [[NSMutableArray alloc] initWithObjects:dictionaryOfItemToAddToInventory, nil];
+    
+    if (numberOfItemsInInventory == 0) {
+                
+        if ([[NSFileManager defaultManager] fileExistsAtPath:filePathToPlist]) {
+            
+            BOOL success = [newContentsInArray writeToFile:filePathToPlist atomically:YES];
+            if (!success) {
+                NSLog(@"Not wrote to plist");
+            }
         }
     }
+    else {
+        
+        NSMutableArray *oldContents = [[NSMutableArray alloc] initWithContentsOfFile:filePathToPlist];
+        NSLog(@"contents %@", oldContents);
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:filePathToPlist]) {
+            
+            [oldContents addObject:dictionaryOfItemToAddToInventory];
+            
+            BOOL success = [oldContents writeToFile:filePathToPlist atomically:YES];
+            if (!success) {
+                NSLog(@"Not wrote to plist");
+            }
+        }
+    }
+    
+    numberOfItemsInInventory ++;
+    [defaults setInteger:numberOfItemsInInventory forKey:@"numberOfItemsInInventory"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    NSLog(@"incremented number %i", numberOfItemsInInventory);
+
 }
 
 - (void)showInventory {
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"inventory.plist"];
-    
-    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePathToPlist]) {
                 
-        NSMutableDictionary *anotherDict = [NSMutableDictionary dictionaryWithContentsOfFile:filePath];
+        NSMutableDictionary *anotherDict = [NSMutableDictionary dictionaryWithContentsOfFile:filePathToPlist];
             
         for (id key in anotherDict) {
             NSLog(@"key: %@, value: %@", key, [anotherDict objectForKey:key]);
@@ -83,26 +115,34 @@
 
 - (void)removeItemFromInventory:(NSString *)item {
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"inventory.plist"];
-    
-    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+    //decrement number of items in inventory by 1
+    numberOfItemsInInventory = [defaults integerForKey:@"numberOfItemsInInventory"];
+    numberOfItemsInInventory --;
         
-        inventoryContents = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
-        NSLog(@"contents of inventory %@", inventoryContents);
-        if ([inventoryContents containsObject:item])
-        {
-            NSLog(@"Found");
-            int index = [inventoryContents indexOfObject:item];
-        }
-        //[inventoryContents writeToFile:filePath atomically:YES];
+    NSMutableArray *oldContents = [[NSMutableArray alloc] initWithContentsOfFile:filePathToPlist];
         
-        BOOL success = [inventoryContents writeToFile:filePath atomically:YES];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePathToPlist]) {
+        
+            
+        NSUInteger index = [oldContents indexOfObjectPassingTest:
+                            ^BOOL(NSDictionary *dict, NSUInteger idx, BOOL *stop) {
+                                return [[dict objectForKey:@"itemName"] isEqual:item];
+                            }];
+        
+        NSLog(@"index is %i", index);
+
+        [oldContents removeObjectAtIndex:index];
+        
+        BOOL success = [oldContents writeToFile:filePathToPlist atomically:YES];
         if (!success) {
-            NSLog(@"not wrote to plist");
+            NSLog(@"Not wrote to plist");
         }
     }
+    
+    [defaults setInteger:numberOfItemsInInventory forKey:@"numberOfItemsInInventory"];
+    NSLog(@"number of items after decrement %i", [defaults integerForKey:@"numberOfItemsInInventory"]);
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
 }
 
 

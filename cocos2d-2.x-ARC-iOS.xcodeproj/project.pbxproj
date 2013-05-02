@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A6C377C172FD33800BC4322 /* mario.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A6C377B172FD33800BC4322 /* mario.png */; };
-		1A6C377F172FE47000BC4322 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A6C377E172FE47000BC4322 /* background.png */; };
 		1A6C3782172FE76400BC4322 /* Inventory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A6C3781172FE76400BC4322 /* Inventory.m */; };
 		1A6C378817302C9300BC4322 /* inventory.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A6C378717302C9300BC4322 /* inventory.plist */; };
 		DC0864B815BD8CE60044A820 /* CCNode+Debug.h in Headers */ = {isa = PBXBuildFile; fileRef = DC0864B515BD8CE60044A820 /* CCNode+Debug.h */; };
@@ -264,9 +262,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1A6C377B172FD33800BC4322 /* mario.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mario.png; sourceTree = "<group>"; };
 		1A6C377D172FE0E900BC4322 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
-		1A6C377E172FE47000BC4322 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
 		1A6C3780172FE76400BC4322 /* Inventory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Inventory.h; path = ../Inventory.h; sourceTree = "<group>"; };
 		1A6C3781172FE76400BC4322 /* Inventory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Inventory.m; path = ../Inventory.m; sourceTree = "<group>"; };
 		1A6C378717302C9300BC4322 /* inventory.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = inventory.plist; path = ../inventory.plist; sourceTree = "<group>"; };
@@ -564,8 +560,6 @@
 		DC0C49E6154AB4DD00B4B727 = {
 			isa = PBXGroup;
 			children = (
-				1A6C377B172FD33800BC4322 /* mario.png */,
-				1A6C377E172FE47000BC4322 /* background.png */,
 				DC0C4A07154AB4DD00B4B727 /* cocos2d-2.x-ARC-iOS */,
 				DC0C49F4154AB4DD00B4B727 /* Frameworks */,
 				DC0C49F2154AB4DD00B4B727 /* Products */,
@@ -1191,8 +1185,6 @@
 				DC0C4A1A154AB4DD00B4B727 /* Icon.png in Resources */,
 				DC0C4A1C154AB4DD00B4B727 /* Icon@2x.png in Resources */,
 				DC0C4A1F154AB4DD00B4B727 /* iTunesArtwork in Resources */,
-				1A6C377C172FD33800BC4322 /* mario.png in Resources */,
-				1A6C377F172FE47000BC4322 /* background.png in Resources */,
 				1A6C378817302C9300BC4322 /* inventory.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

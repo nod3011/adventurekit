@@ -12,7 +12,9 @@
 @interface Inventory : CCNode {
     
     NSDictionary *dictionaryOfItemToAddToInventory;
-    NSMutableArray *inventoryContents;
+    int numberOfItemsInInventory;
+    NSString *filePathToPlist;
+    NSUserDefaults *defaults;
 }
 
 + (id)create;
