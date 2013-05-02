@@ -41,7 +41,7 @@
 {
 	// always call "super" init
 	// Apple recommends to re-assign "self" with the "super's" return value
-	if( (self=[super init]) ) {
+	if( (self = [super init]) ) {
         
         //create inventory
         inventory = [Inventory create];

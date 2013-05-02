@@ -1,5 +1,3 @@
-//This file contains ALL of the strings used in the game
-
 /*
  |----------------------------------------------------------------
  | INVENTORY
